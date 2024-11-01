@@ -48,7 +48,7 @@ void merge(int arr1[], int arr2[], int size1, int size2, int merged[])
     }
     free(buffer);
 }
-void mergeSort(int arr[], int size)
+void mergeSort(int arr[], int size) //O(size * log2(size))
 {
     if (size <= 1)
     {

@@ -19,20 +19,21 @@ int main()
     return 0;
 }
 
-void bubleSort(int arr[], int len)
+void bubleSort(int arr[], int len)// O(len^2) 
 {
-    //int change;//high performance
+    // int change;//high performance
     for (int i = 0; i < len - 1; i++)
     {
-        //change = 0;
+        // change = 0;
         for (int k = 0; k < len - i - 1; k++)
         {
-            if(arr[k] > arr[k+1]){
+            if (arr[k] > arr[k + 1])
+            {
                 swap(&arr[k], &arr[k + 1]);
-                //change = 1;
+                // change = 1;
             }
         }
-        //if(change == 0){break;}
+        // if(change == 0){break;}
     }
 }
 
@@ -55,8 +56,10 @@ void swap(int *a, int *b)
     // *a = *a + *b;
     // *b = *a - *b;
     // *a = *a - *b;
-
-    *a = *a ^ *b;
-    *b = *a ^ *b;
-    *a = *a ^ *b;
+    if (*a != *b)
+    { // без този if ако подадем 2 указателя към една и съща памет ще се занулят
+        *a = *a ^ *b;
+        *b = *a ^ *b;
+        *a = *a ^ *b;
+    }
 }

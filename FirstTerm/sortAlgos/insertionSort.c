@@ -7,7 +7,7 @@ void swap(int *a, int *b);
 
 int main()
 {
-    int arr[] = {1, -9, 10, 5, 8};
+    int arr[] = {1, -9, 10, 5, -8};
     int len = sizeof(arr) / sizeof(arr[0]);
     insertionSort(arr, len);
     printfArr(arr, len);
@@ -19,11 +19,11 @@ int main()
     return 0;
 }
 
-void insertionSort(int arr[], int len)
+void insertionSort(int arr[], int len)// O(len^2)
 {
-    for (int i = 1; i < len; i++)  // 1 -9 10 ; 1 10 -9
+    for (int i = 1; i < len; i++) 
     {
-        int currNum = arr[i]; 
+        int currNum = arr[i];
         int currIndex = i;
         for (int k = i - 1; k >= 0; k--)
         {
@@ -31,12 +31,11 @@ void insertionSort(int arr[], int len)
             {
                 swap(&arr[k], &arr[currIndex]);
                 currIndex--;
-               
             }
-            else break;
+            else
+                break;
         }
     }
-
 }
 
 void printfArr(int arr[], int len)

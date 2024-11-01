@@ -9,12 +9,12 @@ void main()
     printf("\n");
     recPrintBin(5);
     printf("\n");
-    recPrintBin(25);
+    recPrintBin(25); 
 }
 
-int recPrintBin(int num)
+int recPrintBin(int num) // O(log2(num))
 {
-    if (num >> 1) //0101 0001
+    if (num >> 1) 
     {
         recPrintBin(num >> 1);
     }

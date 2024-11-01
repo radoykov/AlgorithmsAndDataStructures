@@ -12,7 +12,7 @@ void main()
     
 }
 
-int func(int n)
+int func(int n) // O(1)
 {
     //n%4=0 => n+2
     //n%4=1 => n+2

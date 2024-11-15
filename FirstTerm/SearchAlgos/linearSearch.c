@@ -1,4 +1,4 @@
-int linearSearch(int arr[], int size, int item) // O(size)
+int linearSearch(int arr[], int size, int item) // O(n)
 {
     for (int i = 0; i < size; i++)
     {

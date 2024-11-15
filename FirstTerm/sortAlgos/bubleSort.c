@@ -19,7 +19,7 @@ int main()
     return 0;
 }
 
-void bubleSort(int arr[], int len)// O(len^2) 
+void bubleSort(int arr[], int len)// O(n^2) 
 {
     // int change;//high performance
     for (int i = 0; i < len - 1; i++)

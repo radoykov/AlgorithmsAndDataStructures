@@ -1,4 +1,4 @@
-int binarySearch(int arr[], int size, int item)// O(log2(size))
+int binarySearch(int arr[], int size, int item)// O(log2(n)
 {
     int left = 0;
     int right = size - 1;

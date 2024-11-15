@@ -78,7 +78,7 @@ int getDigitCount(int num)
     return a;
 }
 
-void radixSort(int *arr, unsigned int count)
+void radixSort(int *arr, unsigned int count) //O(n * log2(n))
 {
     int *arrPositive = (int *)malloc(sizeof(int));
     int *arrNegative = (int *)malloc(sizeof(int));

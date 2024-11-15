@@ -12,7 +12,7 @@ void main()
     recPrintBin(25); 
 }
 
-int recPrintBin(int num) // O(log2(num))
+int recPrintBin(int num) // O(log2(n))
 {
     if (num >> 1) 
     {

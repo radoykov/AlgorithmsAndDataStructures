@@ -127,7 +127,7 @@ void release(DynamicArray *arr)
     arr->size = 0;
 }
 
-int contains(DynamicArray *arr, void * value)
+int contains(DynamicArray *arr, void *value)
 {
     for (int i = 0; i < arr->size; i++)
     {

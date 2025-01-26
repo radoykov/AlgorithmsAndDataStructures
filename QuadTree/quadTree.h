@@ -1,6 +1,12 @@
 #ifndef QUAD_TREE_H
 #define QUAD_TREE_H
 
+#define CHECK(p)                            \
+    if (p == NULL)                          \
+    {                                       \
+        printf("\nError alocating memory"); \
+        exit(1);                            \
+    }
 #define CHILD_NODES_MAX_COUNT 4
 #define MAX_FIGURES_PER_QUAD 10
 #define FIGURE_NAME_MAX_LENGTH 50

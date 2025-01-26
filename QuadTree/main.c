@@ -1,6 +1,5 @@
 #include <stdio.h>
-#include"quadTree.h"
-
+#include "quadTree.h"
 
 int main()
 {

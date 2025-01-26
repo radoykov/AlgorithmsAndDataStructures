@@ -5,10 +5,10 @@
 #include "dynarr.h"
 #include "quadTree.h"
 
-
 Square *createSquare(char *name, float x, float y, float sideLen)
 {
     Square *sq = (Square *)malloc(sizeof(Square));
+    CHECK(sq);
     strcpy(sq->figure.name, name);
     sq->figure.type = square;
     sq->figure.centerX = x;
@@ -21,6 +21,7 @@ Square *createSquare(char *name, float x, float y, float sideLen)
 Circle *createCircle(char *name, float x, float y, float radius)
 {
     Circle *circ = (Circle *)malloc(sizeof(Circle));
+    CHECK(circ);
     strcpy(circ->figure.name, name);
     circ->figure.type = circle;
     circ->figure.centerX = x;
@@ -78,6 +79,7 @@ int isOverlap(Figure *fig1, Figure *fig2)
 QuadNode *createNode(float minX, float maxX, float minY, float maxY)
 {
     QuadNode *node = (QuadNode *)malloc(sizeof(QuadNode));
+    CHECK(node);
     node->minX = minX;
     node->maxX = maxX;
     node->minY = minY;
@@ -167,6 +169,7 @@ int areQuadsAdjacent(QuadNode *a, QuadNode *b)
 void insertOverlappedFigures(Figure *f1, Figure *f2, DynamicArray *overlaps)
 {
     Overlapped *overlapped = (Overlapped *)malloc(sizeof(Overlapped));
+    CHECK(overlapped);
     overlapped->figure1 = f1;
     overlapped->figure2 = f2;
     pushBack(overlaps, overlapped);
@@ -181,7 +184,7 @@ void checkOverlapsInNode(QuadNode *node, DynamicArray *overlaps)
             if (isOverlap(node->figures[i], node->figures[j]))
             {
                 insertOverlappedFigures(node->figures[i], node->figures[j], overlaps);
-                //printf("\n-Overlap between %s and %s", node->figures[i]->name, node->figures[j]->name);
+                // printf("\n-Overlap between %s and %s", node->figures[i]->name, node->figures[j]->name);
             }
         }
     }
@@ -196,7 +199,7 @@ void checkOverlapsWithNeighbors(QuadNode *node, QuadNode *neighbor, DynamicArray
             if (isOverlap(node->figures[i], neighbor->figures[j]))
             {
                 insertOverlappedFigures(node->figures[i], neighbor->figures[j], overlaps);
-                //printf("\n-Overlap between %s and %s", node->figures[i]->name, neighbor->figures[j]->name);
+                // printf("\n-Overlap between %s and %s", node->figures[i]->name, neighbor->figures[j]->name);
             }
         }
     }

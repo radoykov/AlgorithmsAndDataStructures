@@ -16,5 +16,6 @@ void printInOrder(AVLNode* node);
 AVLNode* rotateLeft(AVLNode* node);
 AVLNode* rotateRight(AVLNode* node);
 void updateHeight(AVLNode* node);
+void releaseTree(AVLNode *node);
 
 #endif

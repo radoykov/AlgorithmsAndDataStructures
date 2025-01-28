@@ -162,3 +162,14 @@ void printInOrder(Node* node) {
     printf("%d ", node->val);
     printInOrder(node->right);
 }
+void releaseTree(Node * node)
+{
+    if (!node)
+    {
+        return;
+    }
+
+    releaseTree(node->left);
+    releaseTree(node->right);
+    free(node);
+}

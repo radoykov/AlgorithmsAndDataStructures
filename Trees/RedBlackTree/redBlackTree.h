@@ -22,5 +22,7 @@ void rightRotation(Node** root, Node* y);
 void treeFixUp(Node** root, Node* node);
 void insert(Node**root, int val);
 void printInOrder(Node* node);
+void releaseTree(Node * node);
+
 
 #endif

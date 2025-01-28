@@ -1,10 +1,12 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "avlTree.h"
 
-AVLNode* createNode(int val) {
-    AVLNode* newNode = (AVLNode*) malloc(sizeof(AVLNode));
-    if(!newNode) {
+AVLNode *createNode(int val)
+{
+    AVLNode *newNode = (AVLNode *)malloc(sizeof(AVLNode));
+    if (!newNode)
+    {
         exit(1);
     }
 
@@ -15,59 +17,75 @@ AVLNode* createNode(int val) {
     return newNode;
 }
 
-
-int getHeight(AVLNode* node) {
-    if(!node) {
+int getHeight(AVLNode *node)
+{
+    if (!node)
+    {
         return 0;
     }
     return node->height;
 }
 
-AVLNode* insert(AVLNode* node, int val) {
-    if(!node) {
+AVLNode *insert(AVLNode *node, int val)
+{
+    if (!node)
+    {
         return createNode(val);
     }
 
-    if(val < node->val) {
+    if (val < node->val)
+    {
         node->left = insert(node->left, val);
-    } else if(val > node->val) {
+    }
+    else if (val > node->val)
+    {
         node->right = insert(node->right, val);
-    } else {
+    }
+    else
+    {
         return node;
     }
 
     updateHeight(node);
 
-    int balanceFactor = getHeight(node->left) - getHeight(node->right); 
+    int balanceFactor = getHeight(node->left) - getHeight(node->right);
 
-    if(balanceFactor > 1 && node->left && val < node->left->val) {
+    if (balanceFactor > 1 && node->left && val < node->left->val)
+    {
         return rotateRight(node);
     }
-    if(balanceFactor > 1 && node->left && val > node->left->val) {
+    if (balanceFactor > 1 && node->left && val > node->left->val)
+    {
         node->left = rotateLeft(node->left);
         return rotateRight(node);
     }
-    if(balanceFactor < -1 && node->right && val < node->right->val) {
+    if (balanceFactor < -1 && node->right && val < node->right->val)
+    {
         node->right = rotateRight(node->right);
         return rotateLeft(node);
     }
-    if(balanceFactor < -1 && node->right && val > node->right->val) {
+    if (balanceFactor < -1 && node->right && val > node->right->val)
+    {
         return rotateLeft(node);
     }
 
     return node;
 }
 
-int max(int a, int b) {
+int max(int a, int b)
+{
     return a > b ? a : b;
 }
 
-void updateHeight(AVLNode* node) {
+void updateHeight(AVLNode *node)
+{
     node->height = 1 + max(getHeight(node->left), getHeight(node->right));
 }
 
-void printInOrder(AVLNode* node) {
-    if(!node) {
+void printInOrder(AVLNode *node)
+{
+    if (!node)
+    {
         return;
     }
 
@@ -76,9 +94,10 @@ void printInOrder(AVLNode* node) {
     printInOrder(node->right);
 }
 
-AVLNode* rotateLeft(AVLNode* x) {
-    AVLNode* y = x->right;
-    AVLNode* T2 = y->left;
+AVLNode *rotateLeft(AVLNode *x)
+{
+    AVLNode *y = x->right;
+    AVLNode *T2 = y->left;
 
     y->left = x;
     x->right = T2;
@@ -89,9 +108,10 @@ AVLNode* rotateLeft(AVLNode* x) {
     return y;
 }
 
-AVLNode* rotateRight(AVLNode* y) {
-    AVLNode* x = y->left;
-    AVLNode* T2 = x->right;
+AVLNode *rotateRight(AVLNode *y)
+{
+    AVLNode *x = y->left;
+    AVLNode *T2 = x->right;
 
     x->right = y;
     y->left = T2;
@@ -100,4 +120,16 @@ AVLNode* rotateRight(AVLNode* y) {
     updateHeight(y);
 
     return x;
+}
+
+void releaseTree(AVLNode *node)
+{
+    if (!node)
+    {
+        return;
+    }
+
+    releaseTree(node->left);
+    releaseTree(node->right);
+    free(node);
 }

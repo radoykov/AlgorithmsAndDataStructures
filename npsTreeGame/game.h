@@ -56,5 +56,9 @@ Inventory *initInventory();
 Item *createItem(char name[MAXLINESIZE], int count);
 void addItem(Inventory *inv, Item *item);
 Inventory *createInventory();
+void freePlayer(Player *player);
+void freeTree(Nps *root);
+void freeInventory(Inventory *inv);
+
 
 #endif

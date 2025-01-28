@@ -25,5 +25,7 @@ void printTree(TreeNode *node);
 void printLevel(TreeNode *root, int level);
 int height(TreeNode *root);
 void printByLevel(TreeNode *root);
+void releaseTree(TreeNode * node);
+
 
 #endif

@@ -3,7 +3,6 @@
 #include <string.h>
 #include "game.h"
 
-
 Nps *init_node(char npsText[MAXLINESIZE])
 {
     if (npsText == NULL)
@@ -291,4 +290,40 @@ Inventory *createInventory()
         addItem(inv, item);
     }
     return inv;
+}
+void freePlayer(Player *player)
+{
+    if (player)
+    {
+        free(player);
+    }
+}
+
+void freeTree(Nps *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    for (int i = 0; i < root->answersCount; i++)
+    {
+        freeTree(root->answers[i]->next);
+        freePlayer(root->answers[i]);
+    }
+    free(root->answers);
+    free(root);
+}
+
+void freeInventory(Inventory *inv)
+{
+    if (inv)
+    {
+        for (int i = 0; i < inv->size; i++)
+        {
+            free(inv->items[i]);
+        }
+        free(inv->items);
+        free(inv);
+    }
 }

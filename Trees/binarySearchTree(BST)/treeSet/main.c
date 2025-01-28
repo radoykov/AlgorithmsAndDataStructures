@@ -21,4 +21,5 @@ int main()
     //  treeSetAdd2(&myTreeSet, 1);
     //  treeSetAdd2(&myTreeSet, 1);
     //  printTreeSet(myTreeSet);
+    releaseTree(myTreeSet);
 }

@@ -175,4 +175,17 @@ int main()
 
     printf("%d\n", hasPathSum(root, 12));
     printf("%d\n", hasPathSum(root, 11));
+    releaseTree(root);
+}
+
+void releaseTree(TreeNode * node)
+{
+    if (!node)
+    {
+        return;
+    }
+
+    releaseTree(node->left);
+    releaseTree(node->right);
+    free(node);
 }

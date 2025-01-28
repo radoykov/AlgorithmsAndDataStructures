@@ -13,4 +13,5 @@ int main()
     insert(&root, 17);
 
     printInOrder(root);
+    releaseTree(root);
 }

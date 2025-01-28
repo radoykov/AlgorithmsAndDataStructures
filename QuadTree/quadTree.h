@@ -70,7 +70,8 @@ void checkOverlapsInNode(QuadNode *node, DynamicArray *overlaps);
 void checkOverlapsWithNeighbors(QuadNode *node, QuadNode *neighbor, DynamicArray *overlaps);
 void findAdjacentQuadsReqursive(QuadNode *baseNode, QuadNode *node, DynamicArray *checkedNodes, DynamicArray *overlaps);
 void findOverlapsRecursive(QuadNode *node, QuadNode *root, DynamicArray *checkedNodes, DynamicArray *overlaps);
-void releaseAll(DynamicArray arr);
+void releaseOverlaped(DynamicArray arr);
 DynamicArray findOverlaps(QuadNode *root);
+void releaseTree(QuadNode *node);
 
 #endif

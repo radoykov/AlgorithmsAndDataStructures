@@ -35,7 +35,7 @@ int main()
         Overlapped *over = (Overlapped *)overlaps.buffer[i];
         printf("\nOverlap between %s and %s", over->figure1->name, over->figure2->name);
     }
-    releaseAll(overlaps);
-
+    releaseOverlaped(overlaps);
+    releaseTree(root);
     return 0;
 }

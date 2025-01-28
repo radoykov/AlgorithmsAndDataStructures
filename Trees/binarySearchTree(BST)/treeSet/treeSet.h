@@ -22,5 +22,5 @@ void treeSetAdd2(TreeNode **set, int val);
 unsigned treeSetHeight(TreeNode *set);
 
 void printTreeSet(TreeNode *set);
-
+void releaseTree(TreeNode *node);
 #endif

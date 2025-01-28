@@ -76,4 +76,5 @@ int main() {
 
     // printInOrder(root);
     printTreeBfs(root);
+    releaseTree(root);
 }

@@ -149,3 +149,14 @@ void printTreeSet(TreeNode *node)
     printf("%d ", node->val);
     printTreeSet(node->right);
 }
+void releaseTree(TreeNode *node)
+{
+    if (!node)
+    {
+        return;
+    }
+
+    releaseTree(node->left);
+    releaseTree(node->right);
+    free(node);
+}

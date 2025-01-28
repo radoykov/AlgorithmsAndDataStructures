@@ -127,6 +127,7 @@ void insertFigure(QuadNode *node, Figure *figure)
     if (node->figureCount == 10)
     {
         subDivide(node);
+        node->figureCount = 0;
     }
 }
 
@@ -246,7 +247,7 @@ void findOverlapsRecursive(QuadNode *node, QuadNode *root, DynamicArray *checked
     }
 }
 
-void releaseAll(DynamicArray arr)
+void releaseOverlaped(DynamicArray arr)
 {
     for (uint i = 0; i < arr.size; i++)
     {
@@ -255,12 +256,42 @@ void releaseAll(DynamicArray arr)
     release(&arr);
 }
 
+void releaseTree(QuadNode *node)
+{
+    if (node == NULL)
+    {
+        return;
+    }
+
+    if (node->children[0] != NULL)
+    {
+        for (int i = 0; i < CHILD_NODES_MAX_COUNT; i++)
+        {
+            releaseTree(node->children[i]);
+        }
+    }
+
+    for (int i = 0; i < node->figureCount; i++)
+    {
+        if (node->figures[i]->type == square)
+        {
+            free((Square *)node->figures[i]);
+        }
+        else if (node->figures[i]->type == circle)
+        {
+            free((Circle *)node->figures[i]);
+        }
+    }
+
+    free(node);
+}
+
 DynamicArray findOverlaps(QuadNode *root)
 {
     DynamicArray checkedNodes = init(0);
     DynamicArray overlaps = init(0);
     findOverlapsRecursive(root, root, &checkedNodes, &overlaps);
-    releaseAll(checkedNodes);
+    release(&checkedNodes);
 
     return overlaps;
 }

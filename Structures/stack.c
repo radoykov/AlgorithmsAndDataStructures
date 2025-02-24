@@ -7,6 +7,7 @@ Stack *initStack()
 {
     Stack *stack = (Stack *)malloc(sizeof(Stack));
     stack->top = NULL;
+    return stack;
 }
 static StackNode *createStackNode(int val)
 {

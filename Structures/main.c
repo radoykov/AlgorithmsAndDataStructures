@@ -3,6 +3,7 @@
 #include "queue.h"
 #include "stack.h"
 #include "vector.h"
+#include "pqueue.h"
 
 int main() 
 {
@@ -70,6 +71,16 @@ int main()
 
     printVector(vector);
     releaseVector(vector);
+
+    //using pqueue
+    PQueue * pq = initPQ();
+    char * a = "a";
+    char * b = "b";
+    pqInsert(pq, a, 5.5);
+    pqInsert(pq, b, 3.3);
+    printf("\n%c", *(char *)(deleteMin(pq))->data);
+    printf("\n%c", *(char *)(deleteMin(pq))->data);
+    freePQ(pq);
 
     return 0;
 }

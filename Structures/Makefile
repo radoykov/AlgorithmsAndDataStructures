@@ -1,7 +1,10 @@
 all: main.exe
 
-main.exe: main.c queue.o set.o stack.o vector.o
-	gcc main.c queue.o set.o stack.o vector.o -o main.exe
+main.exe: main.c queue.o pqueue.o set.o stack.o vector.o
+	gcc main.c queue.o pqueue.o set.o stack.o vector.o -o main.exe
+
+pqueue.o: pqueue.c pqueue.h
+	gcc -c pqueue.c -o pqueue.o
 
 queue.o: queue.c queue.h
 	gcc -c queue.c -o queue.o

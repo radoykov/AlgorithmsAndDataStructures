@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "pqueue.h"
 
 typedef struct HuffmanTreeNode
@@ -53,8 +54,9 @@ HuffmanTreeNode *huffmanTree(char *text)
 
         pqInsert(pq, parent, parent->freq);
     }
-
-    return (HuffmanTreeNode *)deleteMin(pq)->data;
+    HuffmanTreeNode * hn = deleteMin(pq)->data;
+    freePQ(pq);
+    return hn;
 }
 
 void printCodes(HuffmanTreeNode *root, int arr[], int top)
@@ -82,6 +84,64 @@ void printCodes(HuffmanTreeNode *root, int arr[], int top)
     }
 }
 
+void encodeHuffmanHelper(HuffmanTreeNode *root, char ch, int arr[], int arrSize)
+{
+    if (ch == root->c)
+    {
+        for (int i = 0; i < arrSize; i++)
+        {
+            printf("%d", arr[i]);
+        }
+        arrSize = 0;
+    }
+    if (root->left)
+    {
+        arr[arrSize++] = 0;
+        encodeHuffmanHelper(root->left, ch, arr, arrSize);
+        arrSize--;
+    }
+    if (root->right)
+    {
+        arr[arrSize++] = 1;
+        encodeHuffmanHelper(root->right, ch, arr, arrSize);
+        arrSize--;
+    }
+}
+
+void encodeHuffman(HuffmanTreeNode *root, char *name)
+{
+    int arr[100]; ///\for one char
+    int arrSize = 0;
+    int nameLen = strlen(name);
+    for (int i = 0; i < nameLen; i++)
+    {
+        encodeHuffmanHelper(root, name[i], arr, arrSize);
+    }
+}
+void decodeHuffman(HuffmanTreeNode *rootOriginal, HuffmanTreeNode *root, int code[], int startIndex, int codeSize)
+{
+    // bottom of rec.
+    if (!root->left && !root->right)
+    {
+        printf("%c", root->c);
+        decodeHuffman(rootOriginal, rootOriginal, code, startIndex, codeSize);
+        return;
+    }
+    if (startIndex >= codeSize)
+    {
+        return;
+    }
+
+    if (code[startIndex] == 0 && root->left)
+    {
+        decodeHuffman(rootOriginal, root->left, code, startIndex + 1, codeSize);
+    }
+    else if (code[startIndex] == 1 && root->right)
+    {
+        decodeHuffman(rootOriginal, root->right, code, startIndex + 1, codeSize);
+    }
+}
+
 void freeHuffmanTree(HuffmanTreeNode *node)
 {
     if (!node)
@@ -95,11 +155,15 @@ void freeHuffmanTree(HuffmanTreeNode *node)
 
 int main()
 {
-    char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec hendrerit lectus vitae tellus congue dapibus. Cras auctor auctor pellentesque. Phasellus consequat lacus ipsum. Maecenas sit amet massa lacinia, malesuada diam in, gravida odio. Sed consequat lorem tortor, elementum ornare enim gravida sed. In molestie condimentum sapien, vel finibus turpis eleifend semper. Nam ac lorem rhoncus, pellentesque dui a, tincidunt lectus. Ut fermentum velit gravida neque condimentum, sed porttitor nunc facilisis. Donec rhoncus ornare venenatis. Quisque sed placerat felis, ac laoreet ante. Quisque sit amet ipsum ac quam imperdiet volutpat vitae id ipsum.";
-    // char text[] = "AAAABBBVGGDKKK";
+    // char text[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec hendrerit lectus vitae tellus congue dapibus. Cras auctor auctor pellentesque. Phasellus consequat lacus ipsum. Maecenas sit amet massa lacinia, malesuada diam in, gravida odio. Sed consequat lorem tortor, elementum ornare enim gravida sed. In molestie condimentum sapien, vel finibus turpis eleifend semper. Nam ac lorem rhoncus, pellentesque dui a, tincidunt lectus. Ut fermentum velit gravida neque condimentum, sed porttitor nunc facilisis. Donec rhoncus ornare venenatis. Quisque sed placerat felis, ac laoreet ante. Quisque sit amet ipsum ac quam imperdiet volutpat vitae id ipsum.";
+    char text[] = "AAAABBBVGGDKKK";
     HuffmanTreeNode *root = huffmanTree(text);
     int arr[100];
     int top = 0;
     printCodes(root, arr, top);
+    encodeHuffman(root, text);
+
+    int code[8] = {0, 1, 1, 1, 1, 0, 1, 0};
+    decodeHuffman(root, root, code, 0, 8);
     freeHuffmanTree(root);
 }

@@ -1,222 +1,225 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX_NUMBER_IN_ASCII_TABLE 255
+#include <ctype.h>
 #define CHECK(ptr)                          \
     if (!ptr)                               \
     {                                       \
         printf("Error memory allocation."); \
         exit(1);                            \
     }
+#define MAX_ASCII 255
+#define MAX_ARR_SIZE 512
 
-typedef struct LZWNode
+typedef struct
 {
-    int number;
-    char *letters;
-
+    int code;
+    char *str;
 } LZWNode;
 
-typedef struct Pointers
+LZWNode *createNode(char *str, int code)
 {
-    char *pStrat;
-    char *pEnd;
-    int val;
-
-} Pointers;
-
-LZWNode **initLZWArray(int num)
-{
-    LZWNode **arr = (LZWNode **)malloc(sizeof(LZWNode *) * num);
-    CHECK(arr);
-
-    return arr;
-}
-
-LZWNode *createLZWNode(char *str, int num)
-{
-    LZWNode *node = (LZWNode *)malloc(sizeof(LZWNode));
+    LZWNode *node = malloc(sizeof(LZWNode));
     CHECK(node);
-
-    int strLen = strlen(str);
-    node->letters = (char *)malloc(sizeof(char) * (strlen(str) + 1));
-    CHECK(node->letters);
-
-    strcpy(node->letters, str);
-    node->letters[strLen] = '\0';
-    node->number = num;
-
+    node->code = code;
+    node->str = strdup(str);
     return node;
 }
 
-int searchInTable(LZWNode **arr, int arrSize, char *text)
+void freeAll(LZWNode **arr, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        free(arr[i]->str);
+        free(arr[i]);
+    }
+    free(arr);
+}
+
+int findByStr(LZWNode **arr, int arrSize, char *str)
 {
     for (int i = 0; i < arrSize; i++)
     {
-        if (!strcmp(arr[i]->letters, text))
+        if (strcmp(arr[i]->str, str) == 0)
         {
-            return arr[i]->number;
+            return arr[i]->code;
         }
     }
-    return 0;
+    return -1;
 }
 
-Pointers *searchPartsOfTableInText(LZWNode **arr, int arrSize, char *text)
+char *findByCode(LZWNode **arr, int arrSize, int code)
 {
-    Pointers *pstruct = (Pointers *)malloc(sizeof(Pointers));
-    CHECK(pstruct);
-
-    for (int i = arrSize - 1; i >= 0; i--)
+    for (int i = 0; i < arrSize; i++)
     {
-        char *p = strstr(text, arr[i]->letters);
-        if (p != NULL)
+        if (arr[i]->code == code)
         {
-            pstruct->pStrat = p;
-            pstruct->pEnd = pstruct->pStrat + strlen(arr[i]->letters) - 1;
-            pstruct->val = arr[i]->number;
-            return pstruct;
+            return arr[i]->str;
         }
     }
     return NULL;
 }
 
-void encodeLZW(char *text)
+void isItStrInStr(LZWNode **arr, int arrSize, char *str)
 {
-    LZWNode **arr = initLZWArray(100);
-    int arrSize = 0;
-
-    char workingString[100] = {'\0'};
-    int workStrSize = 0;
-    char curr = '\0';
-    int sizeText = strlen(text);
-
-    for (int i = 0; i < sizeText + 1; i++) // for one loop only more so to finish the calcolations
+    for (int i = arrSize - 1; i >= 0; i--)
     {
-        curr = text[i];
-
-        // is it in the table
-        // writing in a table
-        if (workStrSize > 1 && searchInTable(arr, arrSize, workingString) == 0)
+        char *p = strstr(str, arr[i]->str);
+        if (p)
         {
-            // for print
-            char new[100];
-            strcpy(new, workingString);
-            while (1)
-            {
+            char temp[100];
+            strcpy(temp, str);
 
-                Pointers *p = searchPartsOfTableInText(arr, arrSize, new);
-                if (p == NULL)
-                {
-                    break;
-                }
+            char numStr[20] = "";
 
-                int lenBefore = p->pStrat - new;
-                if (lenBefore < 0)
-                    lenBefore = 0;
-
-                char temp[100] = {0};
-                strncpy(temp, new, lenBefore);
-                temp[lenBefore] = '\0';
-
-                char numStr[10];
-                sprintf(numStr, "%d", p->val);
-                strcat(temp, numStr);
-                strcat(temp, p->pEnd + 1);
-
-                strcpy(new, temp);
-                free(p);
-            }
-            if (new[0] == '\0')
-            {
-                printf("%s", workingString);
-            }
-            else
-            {
-                printf("%s", new);
-            }
-
-            LZWNode *node = createLZWNode(workingString, arrSize + MAX_NUMBER_IN_ASCII_TABLE + 1);
-            arr[arrSize++] = node;
-            workStrSize = 0;
-            memset(workingString, '\0', 100);
+            *p = '\0';
+            sprintf(numStr, "%d", arr[i]->code);
+            strcat(str, numStr);
+            strcat(str, p + strlen(numStr));
         }
-        // if it is only one letter
-        workingString[workStrSize++] = curr;
     }
-
-    for (int i = 0; i < arrSize; i++)
-    {
-        free(arr[i]->letters);
-        free(arr[i]);
-    }
-    free(arr);
 }
 
-void decodeLZW(char text[])
+void encodeLZW(char *text)
 {
-    LZWNode **arr = initLZWArray(100);
+    LZWNode **arr = (LZWNode **)malloc(sizeof(LZWNode *) * MAX_ARR_SIZE);
+    CHECK(arr);
     int arrSize = 0;
+    int currCode = MAX_ASCII + 1;
 
-    char workingString[100] = {'\0'};
-    int workStrSize = 0;
-    char curr = '\0';
-    int sizeText = strlen(text);
-
-    for (int i = 0; i < sizeText + 1; i++) // for one loop only more so to finish the calcolations
+    char workingStr[100] = "";
+    char curr[2] = "";
+    for (int i = 0; text[i] != '\0'; i++)
     {
-        curr = text[i];
+        curr[0] = text[i];
+        curr[1] = '\0';
 
-        // is it in the table
+        char combined[100] = "";
+        strcpy(combined, workingStr);
+        strcat(combined, curr);
 
-        // writing in a table
-        int numW = atoi(workingString);
-        if (workStrSize > 1 && searchInTable(arr, arrSize, workingString) == 0)
+        if (findByStr(arr, arrSize, combined) != -1 || strlen(combined) == 1)
         {
-            // making the table
+            strcpy(workingStr, combined);
+        }
+        else
+        {
+            isItStrInStr(arr, arrSize, workingStr);
+            printf("%s", workingStr);
+            arr[arrSize++] = createNode(combined, currCode++);
+            strcpy(workingStr, curr);
+        }
+    }
 
-            if (numW > 255)
+    if (strlen(workingStr) > 0)
+    {
+        isItStrInStr(arr, arrSize, workingStr);
+        printf("%s", workingStr);
+    }
+    freeAll(arr, arrSize);
+}
+
+void decodeLZW(const char *text)
+{
+    LZWNode **arr = (LZWNode **)malloc(sizeof(LZWNode *) * MAX_ARR_SIZE);
+    CHECK(arr);
+    int arrSize = 0;
+    int currCode = MAX_ASCII + 1;
+
+    char curr[100] = ""; // for numbers as well
+    char workingStr[100] = "";
+    char combine[200] = "";
+
+    int flag = 0;
+    for (int i = 0; text[i] != '\0'; i++)
+    {
+        char ch = text[i];
+        if (isdigit(ch))
+        {
+            flag++;
+            strncat(curr, &ch, 1);
+            if (flag != 3)
             {
-                for (int i = 0; i < arrSize; i++)
+            continue;
+            }
+            flag = 0;
+            ch = '\0';
+        }
+        // else
+        int code = atoi(curr);
+        char *decoded = (code > MAX_ASCII) ? findByCode(arr, arrSize, code) : NULL;
+
+        if (decoded)
+        {
+            printf("%s", decoded);
+
+            if (strlen(workingStr) > 0)
+            {
+                strcpy(combine, workingStr);
+                strncat(combine, decoded, 1);
+
+                // Only insert if not already in table
+                if (findByStr(arr, arrSize, combine) == -1)
                 {
-                    if (arr[i]->number == numW)
+                    arr[arrSize++] = createNode(combine, currCode++);
+                }
+            }
+
+            strcpy(workingStr, decoded);
+        }
+        else
+        {
+            // It’s not a known code — treat as literal
+            if (strlen(curr) > 0)
+            {
+                printf("%s", curr);
+
+                if (strlen(workingStr) > 0)
+                {
+                    strcpy(combine, workingStr);
+                    strcat(combine, curr);
+
+                    if (findByStr(arr, arrSize, combine) == -1)
                     {
-                        printf("%s", arr[i]->letters);
-                        break;
+                        arr[arrSize++] = createNode(combine, currCode++);
                     }
                 }
-                workStrSize = 0;
-                memset(workingString, '\0', 100);
-            }
-            else if (numW == 0)
-            {
-                printf("%s", workingString);
 
-                LZWNode *node = createLZWNode(workingString, arrSize + MAX_NUMBER_IN_ASCII_TABLE + 1);
-                arr[arrSize++] = node;
-                workStrSize = 0;
-                memset(workingString, '\0', 100);
+                strcpy(workingStr, curr);
             }
         }
 
-        // if it is only one letter
-        workingString[workStrSize++] = curr;
-    }
-    printf("%s", workingString);
+        // Print current non-digit character
 
-    for (int i = 0; i < arrSize; i++)
-    {
-        free(arr[i]->letters);
-        free(arr[i]);
+        printf("%c", ch);
+
+        char newEntry[2] = {ch, '\0'};
+
+        if (strlen(workingStr) > 0)
+        {
+            strcpy(combine, workingStr);
+            strcat(combine, newEntry);
+
+            if (findByStr(arr, arrSize, combine) == -1)
+            {
+                arr[arrSize++] = createNode(combine, currCode++);
+            }
+        }
+
+        strcpy(workingStr, newEntry);
+        curr[0] = '\0';
     }
-    free(arr);
+
+    freeAll(arr, arrSize);
 }
 
 int main()
 {
-    // char *name = "ABBAABC";
-    char *name = "tobeornottobeorbeornot";
-    encodeLZW(name);
-    char text[100] = "ABBA256C";
-    decodeLZW(text);
+    char text[] = "ananas";
+    encodeLZW(text);
+    printf("\n");
+    char text2[] = "an256as";
+    decodeLZW(text2);
 
     return 0;
 }
